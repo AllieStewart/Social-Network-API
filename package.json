@@ -1,0 +1,36 @@
+{
+  "name": "social-network-api",
+  "version": "1.0.0",
+  "description": "Social Network API using Express.js, Mongoose, MondoDB, and JS date format.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AllieStewart/Social-Network-API.git"
+  },
+  "keywords": [
+    "social",
+    "network",
+    "api",
+    "challenge",
+    "18",
+    "ut",
+    "bootcamp",
+    "express.js",
+    "mongoose",
+    "mondoDB"
+  ],
+  "author": "Allie Stewart",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AllieStewart/Social-Network-API/issues"
+  },
+  "homepage": "https://github.com/AllieStewart/Social-Network-API#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0"
+  }
+}
