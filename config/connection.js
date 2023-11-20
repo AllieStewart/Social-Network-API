@@ -1,25 +1,14 @@
 // Start of JS file
 // Connection using Mongoose.
-const Sequelize = require('sequelize');
-require('dotenv').config();
+const { connect, connection } = require('mongoose');
 
-let sequelize;
+// After you create your Heroku application, visit https://dashboard.heroku.com/apps/ select the application name and add your Atlas connection string as a Config Var
+// Node will look for this environment variable and if it exists, it will use it. Otherwise, it will assume that you are running this application locally
+const connectionString =
+  process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/studentsDB';
 
-if (process.env.JAWSDB_URL) {
-  sequelize = new Sequelize(process.env.JAWSDB_URL);
-} else {
-  sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {
-      host: process.env.DB_HOST,
-      dialect: 'mysql',
-      port: 3306
-    }
-  );
-}
+connect(connectionString);
 
-module.exports = sequelize;
+module.exports = connection;
 // End of JS file
 // (Placeholder)

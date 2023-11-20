@@ -1,26 +1,27 @@
 // Start of JS file
 // Main file for route access.
-const path = require('path');
 const express = require('express');
-const session = require('express-session');
-const exphbs = require('express-handlebars');
-const routes = require('./controllers');
-const helpers = require('./utils/helpers');
+const db = require('./config/connection');
+const routes = require('./routes');
 
-// Mongoose connection
+const cwd = process.cwd();
 
+const PORT = process.env.PORT || 3001;
 const app = express();
-const PORT = process.env.PORT || 5001;
 
-app.use(express.json());
+// Note: not necessary for the Express server to function. This just helps indicate what activity's server is running in the terminal.
+const activity = cwd.includes('01-Activities')
+  ? cwd.split('01-Activities')[1]
+  : cwd;
+
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.json());
 app.use(routes);
 
-// change to Mongoose
-sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log('Now listening'));
+db.once('open', () => {
+  app.listen(PORT, () => {
+    console.log(`API server for ${activity} running on port ${PORT}!`);
+  });
 });
 // End of JS file
 // (Placeholder) 

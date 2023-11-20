@@ -1,12 +1,9 @@
 // Start of JS file
 // User model for application.
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/connection');
-// change these to Mongoose
+const { Schema, Types } = require('mongoose');
+const thoughtSchema = require('./Thought');
 
-class User extends Model {}
-
-User.init(
+const userSchema = new Schema(
     {
         username: {
             type: DataTypes.STRING,
@@ -20,13 +17,14 @@ User.init(
             unique: true,
             // match valid email address
         },
-        thoughts: {
-            // array of _id values
-            references: {
-                model: 'thought',
-                key: 'id' // maybe?
-            }
-        },
+        // thoughts: {
+        //     // array of _id values
+        //     references: {
+        //         model: 'thought',
+        //         key: 'id' // maybe?
+        //     }
+        thoughts: [thoughtSchema],
+        //},
         friends: {
             // array of _id values
             references: {
@@ -38,13 +36,14 @@ User.init(
         // length of the user's "friends" array field on query.
     },
     {
-        sequelize, // Mongoooooose
-        timestamps: false,
-        freezeTableName: true,
-        underscored: true,
-        modelName: 'user',
+    toJSON: {
+        virtuals: true,
+      },
+      id: false,
     }
 );
+
+const User = model('user', userSchema);
 
 module.exports = User;
 // End of JS file

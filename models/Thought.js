@@ -1,12 +1,8 @@
 // Start of JS file
 // Thought model for application.
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/connection');
-// change these to Mongoose
+const { Schema, Types } = require('mongoose');
 
-class Thought extends Model {}
-
-Thought.init(
+const thoughtSchema = new Schema(
     {
         thoughtText: {
             type: DataTypes.STRING,
@@ -33,13 +29,11 @@ Thought.init(
         // length of the thought's "reactions" array field on query.
     },
     {
-        sequelize, // Mongoooooose
-        timestamps: false,
-        freezeTableName: true,
-        underscored: true,
-        modelName: 'thought',
-    }
+        toJSON: {
+          getters: true,
+        },
+      }
 );
 
-module.exports = Thought;
+module.exports = thoughtSchema;
 // End of Js file
