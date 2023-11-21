@@ -1,13 +1,14 @@
 // Start of JS file
 // Thought model for application.
-const { Schema, Types } = require('mongoose');
+const { Schema, models } = require('mongoose');
 
 const thoughtSchema = new Schema(
     {
         thoughtText: {
             type: DataTypes.STRING,
-            allowNull: false, // required?
-            // between 1 - 280 characters
+            required: true,
+            min_length: 1,
+            max_length: 280,
         },
         createdAt: {
             type: DataTypes.DATE,
@@ -30,9 +31,10 @@ const thoughtSchema = new Schema(
     },
     {
         toJSON: {
-          getters: true,
+            virtuals: true,
         },
-      }
+        id: false,
+    }
 );
 
 module.exports = thoughtSchema;

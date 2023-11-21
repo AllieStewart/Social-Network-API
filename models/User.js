@@ -1,19 +1,19 @@
 // Start of JS file
 // User model for application.
-const { Schema, Types } = require('mongoose');
+const { Schema, models } = require('mongoose');
 const thoughtSchema = require('./Thought');
 
 const userSchema = new Schema(
     {
         username: {
             type: DataTypes.STRING,
-            allowNull: false, // required?
+            required: true,
             unique: true,
             // trimmed
         },
         email: {
             type: DataTypes.STRING,
-            allowNull: false, // required?
+            required: true,
             unique: true,
             // match valid email address
         },
