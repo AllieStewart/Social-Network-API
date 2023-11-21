@@ -1,39 +1,33 @@
 // Start of JS file
 // User model for application.
 const { Schema, models } = require('mongoose');
-const thoughtSchema = require('./Thought');
 
+// User schema for users.
 const userSchema = new Schema(
     {
         username: {
-            type: DataTypes.STRING,
+            type: String,
             required: true,
             unique: true,
-            // trimmed
+            trim: true,
         },
         email: {
-            type: DataTypes.STRING,
+            type: String,
             required: true,
             unique: true,
-            // match valid email address
+            match: [
+                /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                "Please type in a valid email address",
+              ],
         },
-        // thoughts: {
-        //     // array of _id values
-        //     references: {
-        //         model: 'thought',
-        //         key: 'id' // maybe?
-        //     }
-        thoughts: [thoughtSchema],
-        //},
-        friends: {
-            // array of _id values
-            references: {
-                model: 'user',
-                key: 'id' // maybe?
-            }
-        }
-        // UserSchema -> Create a virtual called "friendCount" that retrieves the 
-        // length of the user's "friends" array field on query.
+         thoughts: [{
+            type: Schema.Types.ObjectId,
+            ref: "thought",
+        }],
+        friends: [{
+            type: Schema.Types.ObjectId,
+            ref: "user",
+        }],
     },
     {
     toJSON: {
@@ -42,6 +36,13 @@ const userSchema = new Schema(
       id: false,
     }
 );
+
+// UserSchema -> Create a virtual called "friendCount" that retrieves the 
+// length of the user's "friends" array field on query.
+userSchema.virtual('friendCount')
+.get(function () {
+    return this.friends.length;
+});
 
 const User = model('user', userSchema);
 

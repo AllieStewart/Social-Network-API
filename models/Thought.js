@@ -1,41 +1,76 @@
 // Start of JS file
 // Thought model for application.
-const { Schema, models } = require('mongoose');
+const { Schema, models, Types } = require('mongoose');
+const dayjs = require('dayjs');
 
-const thoughtSchema = new Schema(
+// Reaction schema for reactions.
+const reactionSchema = new Schema(
     {
-        thoughtText: {
-            type: DataTypes.STRING,
-            required: true,
-            min_length: 1,
-            max_length: 280,
+        reactionId: {
+            type: Schema.Types.ObjectId,
+            default: () => new Types.ObjectId(),
         },
-        createdAt: {
-            type: DataTypes.DATE,
-            // default value to current timestamp,
-            // getter method to format timestamp on query
+        reactionBody: {
+            type: String,
+            required: true,
+            maxlength: 280,
         },
         username: {
-            type: DataTypes.STRING,
-            allowNull: false, // required?
-            references: {
-                model: 'user',
-                key: 'id' // maybe?
-            }
+            type: String,
+            required: true,
         },
-        reactions: {
-            // array of nested documents created with Reaction schema
-        }
-        // ThoughtSchema -> Create a virtual called "reactionCount" that retrieves the 
-        // length of the thought's "reactions" array field on query.
+        createdAt: {
+            type: Date,
+            default: Date.now,
+            get: queryTime => dayjs(queryTime).format('MMM DD, YYYY [at] hh:mm a'),
+        },
     },
     {
         toJSON: {
             virtuals: true,
+            getters: true,
         },
         id: false,
     }
 );
 
-module.exports = thoughtSchema;
+// Thought schema for thoughts.
+const thoughtSchema = new Schema(
+    {
+        thoughtText: {
+            type: String,
+            required: true,
+            min_length: 1,
+            max_length: 280,
+        },
+        createdAt: {
+            type: Date,
+            default: DATE.now,
+            get: queryTime => dayjs(queryTime).format('MMM DD, YYYY [at] hh:mm a'),
+        },
+        username: {
+            type: String,
+            required: true,
+        },
+        reactions: [reactionSchema],
+    },
+    {
+        toJSON: {
+            virtuals: true,
+            getters: true,
+        },
+        id: false,
+    }
+);
+
+// ThoughtSchema -> Create a virtual called "reactionCount" that retrieves the 
+// length of the thought's "reactions" array field on query.
+thoughtSchema.virtual('reactionCount')
+.get(function() {
+    return this.reactions.length;
+});
+
+const Thought = model('thought', thoughtSchema);
+
+module.exports = Thought;
 // End of Js file

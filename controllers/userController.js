@@ -1,68 +1,35 @@
 // Start of JS file
 // Controller for User model.
-const { ObjectId } = require('mongoose').Types;
 const { Thought, User } = require('../models');
 
-// Aggregate function to get the number of users overall
-const headCount = async () => {
-  const numberOfUsers = await User.aggregate()
-    .count('userCount');
-  return numberOfUsers;
-}
-
-// // Aggregate function for getting reactions
-// const reaction = async (userId) =>
-//   User.aggregate([
-//     // only include the given student by using $match
-//     { $match: { _id: new ObjectId(userId) } },
-//     {
-//       $unwind: '$reactions',
-//     },
-//     {
-//       $group: {
-//         _id: new ObjectId(userId),
-//         overallReaction: { $avg: '$reactions.score' },
-//       },
-//     },
-//   ]);
-
 module.exports = {
-  // GET all users
+// GET all users
   async getUsers(req, res) {
     try {
       const users = await User.find();
-
-      const userObj = {
-        users,
-        headCount: await headCount(),
-      };
-
-      res.json(userObj);
+      res.json(users);
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
     }
   },
-  // GET a user
+// GET a user
   async getSingleUser(req, res) {
     try {
       const user = await User.findOne({ _id: req.params.userId })
-        .select('-__v');
-
+      .populate('thoughts')
+      .populate('friends')
+      .select('-__v');
       if (!user) {
         return res.status(404).json({ message: 'No user with that ID' })
       }
-
-      res.json({
-        user,
-        // thought: await reaction(req.params.userId),
-      });
+      res.json(user);
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
     }
   },
-  // CREATE a new user
+// CREATE a new user
   async createUser(req, res) {
     try {
       const user = await User.create(req.body);
@@ -71,72 +38,78 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // DELETE user and remove their thoughts
+// UPDATE a user
+  async updateUser(req, res) {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      );
+      if (!user) {
+        res.status(404).json({ message: 'No user with this id!' });
+      }
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+// DELETE user and remove their thoughts
   async deleteUser(req, res) {
     try {
       const user = await User.findOneAndRemove({ _id: req.params.userId });
-
       if (!user) {
         return res.status(404).json({ message: 'No such user exists' });
       }
-
       const thought = await Thought.findOneAndUpdate(
         { users: req.params.userId },
         { $pull: { users: req.params.userId } },
         { new: true }
       );
-
       if (!thought) {
         return res.status(404).json({
           message: 'User deleted, but no thoughts found',
         });
       }
-
       res.json({ message: 'User successfully deleted' });
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
     }
   },
-
-  // ADD reaction to user
-  async addReaction(req, res) {
-    console.log('You are adding a reaction');
+// ADD friend to user
+  async addFriend(req, res) {
+    console.log('You are adding a friend');
     console.log(req.body);
-
     try {
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $addToSet: { reactions: req.body } },
+        { $addToSet: { friend: req.params.friendId } },
         { runValidators: true, new: true }
       );
-
       if (!user) {
         return res
           .status(404)
           .json({ message: 'No user found with that ID :(' });
       }
-
       res.json(user);
     } catch (err) {
       res.status(500).json(err);
     }
   },
-  // REMOVE reaction from a user
-  async removeReaction(req, res) {
+// REMOVE friend from a user
+  async removeFriend(req, res) {
     try {
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $pull: { reaction: { reactionId: req.params.reactionId } } },
+        { $pull: { friend: req.params.friendId } },
         { runValidators: true, new: true }
       );
-
       if (!user) {
         return res
           .status(404)
           .json({ message: 'No user found with that ID :(' });
       }
-
       res.json(user);
     } catch (err) {
       res.status(500).json(err);
