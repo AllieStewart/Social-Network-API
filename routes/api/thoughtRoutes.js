@@ -1,17 +1,26 @@
 // Start of JS file
 // ThoughtRoutes for GET, POST, PUT, DELETE of thoughts.
 const router = require('express').Router();
-const { User, Thought } = require('../../models');
+const { 
+    getThoughts,
+    getSingleThought,
+    createThought,
+    updateThought,
+    deleteThought,
+ } = require('../../controllers/thoughtController');
 
-// GET all
+// /api/thoughts
+router
+.route('/')
+.get(getThoughts)
+.post(createThought);
 
-// GET by id
-
-// POST
-
-// PUT by id
-
-// DELETE by id
+// /api/thoughts/:thoughtId
+router
+.route('/:thoughtId')
+.get(getSingleThought)
+.put(updateThought)
+.delete(deleteThought);
 
 module.exports = router;
 // End of JS file

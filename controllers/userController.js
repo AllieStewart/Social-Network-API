@@ -99,15 +99,15 @@ module.exports = {
     }
   },
 
-  // ADD thought to user
-  async addThought(req, res) {
-    console.log('You are adding a thought');
+  // ADD reaction to user
+  async addReaction(req, res) {
+    console.log('You are adding a reaction');
     console.log(req.body);
 
     try {
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $addToSet: { thoughts: req.body } },
+        { $addToSet: { reactions: req.body } },
         { runValidators: true, new: true }
       );
 
@@ -122,12 +122,12 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // REMOVE thought from a user
-  async removeThought(req, res) {
+  // REMOVE reaction from a user
+  async removeReaction(req, res) {
     try {
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $pull: { thought: { thoughtId: req.params.thoughtId } } },
+        { $pull: { reaction: { reactionId: req.params.reactionId } } },
         { runValidators: true, new: true }
       );
 

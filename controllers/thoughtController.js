@@ -38,7 +38,7 @@ module.exports = {
     }
   },
   // DELETE a thought
-  async deleteThoughts(req, res) {
+  async deleteThought(req, res) {
     try {
       const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
 
@@ -53,7 +53,7 @@ module.exports = {
     }
   },
   // UPDATE a thought
-  async updateCourse(req, res) {
+  async updateThought(req, res) {
     try {
       const thought = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
