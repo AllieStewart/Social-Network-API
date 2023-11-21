@@ -1,6 +1,6 @@
 // Start of JS file
 // Thought model for application.
-const { Schema, models, Types } = require('mongoose');
+const { Schema, model } = require('mongoose');
 const dayjs = require('dayjs');
 
 // Reaction schema for reactions.
@@ -45,7 +45,7 @@ const thoughtSchema = new Schema(
         },
         createdAt: {
             type: Date,
-            default: DATE.now,
+            default: Date.now,
             get: queryTime => dayjs(queryTime).format('MMM DD, YYYY [at] hh:mm a'),
         },
         username: {

@@ -1,6 +1,6 @@
 // Start of JS file
 // User model for application.
-const { Schema, models } = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 // User schema for users.
 const userSchema = new Schema(
