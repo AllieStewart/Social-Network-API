@@ -40,20 +40,6 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
-// DELETE a thought
-  async deleteThought(req, res) {
-    try {
-      const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
-      
-      if (!thought) {
-        res.status(404).json({ message: 'No thought found with that ID :(' });
-      }
-      await User.deleteMany({ _id: { $in: thought.users } });
-      res.json({ message: 'Thought and users deleted!' });
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  },
 // UPDATE a thought
   async updateThought(req, res) {
     try {
@@ -70,21 +56,35 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+// DELETE a thought
+async deleteThought(req, res) {
+  try {
+    const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
+    
+    if (!thought) {
+      res.status(404).json({ message: 'No thought found with that ID :(' });
+    }
+    await User.deleteMany({ _id: { $in: thought.users } });
+    res.json({ message: 'Thought and reactions deleted!' });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+},
 // ADD reaction to user
   async addReaction(req, res) {
     console.log('You are adding a reaction');
     try {
-      const thought = await Thought.findOneAndUpdate(
+      const reaction = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
         { $addToSet: { reactions: req.body } },
-        { new: true }
+        { runValidators: true }
       );
-      if (!thought) {
+      if (!reaction) {
         return res
           .status(404)
           .json({ message: 'No thought found with that ID :(' });
       }
-      res.json(thought);
+      res.json(reaction);
     } catch (err) {
       res.status(500).json(err);
     }
@@ -92,17 +92,17 @@ module.exports = {
 // REMOVE reaction from a user
   async removeReaction(req, res) {
     try {
-      const thought = await Thought.findOneAndUpdate(
+      const reaction = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
         { $pull: { reactions: { reactionId: req.params.reactionId } } },
-        { new: true }
+        { runValidators: true, new: true }
       );
-      if (!thought) {
+      if (!reaction) {
         return res
           .status(404)
-          .json({ message: 'No user found with that ID :(' });
+          .json({ message: 'No reaction found with that ID :(' });
       }
-      res.json(thought);
+      res.json(reaction);
     } catch (err) {
       res.status(500).json(err);
     }
