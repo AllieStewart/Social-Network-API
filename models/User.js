@@ -1,6 +1,6 @@
 // Start of JS file
 // User model for application.
-const { Schema, model, Types } = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 // User schema for users.
 const userSchema = new Schema(
@@ -23,13 +23,13 @@ const userSchema = new Schema(
         thoughts: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "Thought",
+                ref: 'Thought',
             },
         ],
         friends: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "User",
+                ref: 'User',
             }
         ],
     },
