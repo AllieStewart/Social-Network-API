@@ -1,6 +1,6 @@
 // Start of JS file
 // User model for application.
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 
 // User schema for users.
 const userSchema = new Schema(
@@ -20,14 +20,18 @@ const userSchema = new Schema(
                 "Please type in a valid email address",
               ],
         },
-         thoughts: [{
-            type: Schema.Types.ObjectId,
-            ref: "thought",
-        }],
-        friends: [{
-            type: Schema.Types.ObjectId,
-            ref: "user",
-        }],
+        thoughts: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "Thought",
+            },
+        ],
+        friends: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            }
+        ],
     },
     {
     toJSON: {
@@ -44,7 +48,7 @@ userSchema.virtual('friendCount')
     return this.friends.length;
 });
 
-const User = model('user', userSchema);
+const User = model('User', userSchema);
 
 module.exports = User;
 // End of JS file

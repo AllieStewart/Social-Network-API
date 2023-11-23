@@ -1,6 +1,6 @@
 // Start of JS file
 // Thought model for application.
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 const dayjs = require('dayjs');
 
 // Reaction schema for reactions.
@@ -46,7 +46,7 @@ const thoughtSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now,
-            get: queryTime => dayjs(queryTime).format('MMM DD, YYYY [at] hh:mm a'),
+            get: queryTime => dayjs(queryTime).format("MMM DD, YYYY [at] hh:mm a"),
         },
         username: {
             type: String,
@@ -70,7 +70,7 @@ thoughtSchema.virtual('reactionCount')
     return this.reactions.length;
 });
 
-const Thought = model('thought', thoughtSchema);
+const Thought = model('Thought', thoughtSchema);
 
 module.exports = Thought;
 // End of Js file
