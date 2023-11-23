@@ -1,5 +1,5 @@
 // Start of JS file
-// Controller for User model.
+// Controller for User model and Friends.
 const { Thought, User } = require('../models');
 
 module.exports = {
@@ -64,12 +64,12 @@ module.exports = {
       if (!user) {
         return res.status(404).json({ message: 'No such user exists' });
       }
-      await Thought.deleteMany({_id: { $in: user.thoughts }});
-      // const thought = await Thought.findOneAndUpdate(
-      //   { users: req.params.userId },
-      //   { $pull: { users: req.params.userId } },
-      //   { new: true }
-      // );
+      // await Thought.deleteMany({_id: { $in: user.thoughts }});
+      const thought = await Thought.findOneAndUpdate(
+        { users: req.params.userId },
+        { $pull: { users: req.params.userId } },
+        { new: true }
+      );
       if (!thought) {
         return res.status(404).json({
           message: 'User deleted, but no thoughts found',

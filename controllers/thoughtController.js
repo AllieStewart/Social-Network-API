@@ -1,5 +1,5 @@
 // Start of JS file
-// Controller for Thought model.
+// Controller for Thought model and Reaction schema.
 const { Thought, User } = require('../models');
 
 module.exports = {
@@ -29,10 +29,10 @@ module.exports = {
   async createThought(req, res) {
     try {
       const thought = await Thought.create(req.body);
-      const user = await User.findByIdAndUpdate(
-        req.body.userId,
-        { $addToSet: { thoughts: thought._id } },
-        { runValidators: true, new: true }
+      const user = await User.findOneAndUpdate(
+        { _id: req.body.userId },
+        { $push: { thoughts: _id } },
+        { new: true }
       );
       res.json({thought, user});
     } catch (err) {
